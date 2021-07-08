@@ -1,0 +1,70 @@
+extends partial/layout
+
+block content
+  
+  header
+    .wrap
+      -if(parent)
+        a.back(href=parent)
+          i.ic.ic-back(style="color:#1b9aee;font-size:18px;")
+      a.home(href='/')
+        img(src='https://g.alicdn.com/teambition-site/site/images/header/logo-one.svg' height='30.0px')
+        |  文件列表
+      .upload-menu
+        -if(writeable)
+          a
+            i.ic.ic-upload-folder
+            input(type="file",multiple="",webkitdirectory="",directory="",name="file")
+          a
+            i.ic.ic-upload
+            input(type="file",multiple="",name="file")
+        -if(downloadable)
+          a(href='?download',title="下载文件夹")
+            i.ic.ic-folder-download
+        a.menu-viewtype(title="视图模式")
+          i.ic.ic-grid
+          i.ic.ic-list
+  section.wrap.node-list
+    .node-list__header
+      .row
+        .col-md-7.col-sm-6.col-xs-8(data-sort="name")= __('filename')
+        .col-md-2.col-sm-2.col-xs-4.text-right(data-sort="size")= __('size')
+        .col-md-3.col-sm-4.hidden-xs.text-right(data-sort="time")= __('last_modified')
+    ul.node-list__body
+      each i in data
+        li
+          a.clearfix(href=i.href, target=i.type == 'folder' ? '' : '_blank',title=i.name)
+            .row
+              span.file-name.col-md-7.col-sm-6.col-xs-8
+                span(data-type=i.type,data-thumb=i.thumb)
+                  span.file-thumb 
+                    -if(i.thumb)
+                      .file-thumb-img(data-src=i.thumb)
+                    i.ic(class='ic-'+i.type)
+                  span.file-name-title #{i.name}
+              span.file-size.col-md-2.col-sm-2.col-xs-4.text-right
+                | #{i._size ? i.size : ''}
+              span.file-modified.col-md-3.col-sm-4.hidden-xs.text-right
+                | #{i.updated_at}
+  -if(readme)
+    link(rel='stylesheet', type='text/css', href='https://lib.baomitu.com/github-markdown-css/3.0.1/github-markdown.css')
+    section.wrap(style="margin-top:64px;border-top:1px solid #eee;")
+      article.markdown-body(style="padding:32px;")
+        | !{readme}
+  script('data-no-instant',src='/js/code.min.js')
+  script('data-no-instant',src='https://lib.baomitu.com/jquery/3.5.1/jquery.min.js')
+  script('data-no-instant',src='https://lib.baomitu.com/instantclick/3.1.0/instantclick.min.js')
+  script('data-no-instant',src='/script/main.js?'+__timestamp__)
+  script().
+    $(".file-modified").each(function(){var utc_datetime=$(this).text();var len=(utc_datetime.length);if(len=="24"){function formDate(dateForm){var d=new Date(dateForm).toJSON();var date=new Date(+new Date(d)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'');return date}var beijing_date=formDate(utc_datetime);$(this).text(beijing_date)}});
+  script().
+    $(".file-size,.file-modified").each(function(){""==$(this).text()&&$(this).text("-")});
+  script().
+    $(".file-name-title").each(function(){var filename_title=$(this).text();if(filename_title.indexOf("m3u8")!=-1){filename_m3u8=filename_title.substring(0,filename_title.indexOf('.'));$(this).text(filename_m3u8)}});
+  script('data-no-instant').
+    InstantClick.init('mousedown');InstantClick.on('change',function(url,body,title){renderViewMode()});
+  script.
+    Prism.highlightAll();
+  -if(writeable)
+    script('data-no-instant',src='/script/upload.js')
+  include partial/footer

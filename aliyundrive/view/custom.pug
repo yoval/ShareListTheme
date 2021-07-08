@@ -1,0 +1,13 @@
+extends partial/layout
+
+block content
+  include partial/message
+  
+  header
+    .wrap
+      a.home(href='/')
+        img(src=_config_('logo') height='30.0px')
+  section.wrap
+    div!= body
+
+  include partial/footer

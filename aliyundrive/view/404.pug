@@ -1,0 +1,28 @@
+extends partial/layout
+
+block content
+  
+  header
+    .wrap
+      -if(parent)
+        a.back(href=parent)
+          i.ic.ic-back(style="color:#1b9aee;font-size:18px;")
+      a.home(href='/')
+        img(src=_config_('logo') height='30.0px')
+
+  <center>
+  br
+  br
+  br
+  img(src='/img/404.png' width='300.0px')
+  br
+  br
+  p
+  <h3 class="error-title" style="color:#587bff";>404 Not Found</h3>
+  <p style="color:#587bff";><b>文件不存在或打包下载超出大小限制</b></p>
+  br
+  br
+  br
+  br
+  </center>
+  include partial/footer
